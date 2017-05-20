@@ -1,25 +1,18 @@
-## hcache - a tool fork from pcstat, with a feature that showing top X biggest cache files 
+## hcache - a tool fork from pcstat, with a feature that showing top X biggest cache files globally
 
 The [pcstat](https://github.com/tobert/pcstat) tool can get page cache statistics for one file by the file's name, or all cached files for a process by the process's pid.
 
-However, I often meet with a question: I can find out that the linux os cached quite a lot by checking the meminfo, but I do not know which BIG files is being cached. Of course I can use the `ps aux` command to get those processes who used a lot of memory and get the details by the `pcstat --pid [pid]`, but `pcstat` does not sort the result, it is not convenient.
+However, I often meet with a question: I know os cached memories by `cat /proc/meminfo` or `free`, but I can't find out those BIG files which is being cached. Of course I can use the `ps aux` command to get those processes who used a lot of memory and get the details by the `pcstat --pid [pid]`, but `pcstat` does not sort the result, and it is not convenient.
 
-So I add a feature to pcstat: you can use the option `--top [X]` to show the top X biggest cached files. After that, you can use `lsof` to find out the bad guy.
+So I add a feature to pcstat: you can use the option `--top [X]` to show the top X biggest cached files globally. After that, you can use `lsof` to find out the bad guy.
 
-## Building
+## Download
 
-```
-git clone https://github.com/silenceshell/hcache.git
-cd {CURRENT_DIR}/hcache
-export GOPATH={CURRENT_DIR}/hcache
-go get github.com/tobert/pcstat
-go build
-```
+I also build a bin file. You can download it from [here](http://7xir15.com1.z0.glb.clouddn.com/hcache), have a try! I have tested it on centos7.2 and ubuntu 16.04.
 
 ## Usage
 
-hcache has the same options that is used by pcstat, and a new option `--top [X]`. 
-
+`hcache` has the same options that is used by `pcstat`, and a new option `--top [X]`. Attention, you CANNOT use both `-pid` and `-top`.
 
 ```
 hcache <-json <-pps>|-terse|-default> <-nohdr> <-bname> file file file
@@ -68,6 +61,17 @@ $
 $ lsof /usr/lib/x86_64-linux-gnu/libQtWebKit.so.4.10.2 
 COMMAND    PID   USER  FD   TYPE DEVICE SIZE/OFF    NODE NAME
 quiterss 20630 bottle mem    REG    8,5 36462184 3936610 /usr/lib/x86_64-linux-gnu/libQtWebKit.so.4.10.2
+```
+
+## Building
+
+```
+git clone https://github.com/silenceshell/hcache.git
+cd {CURRENT_DIR}/hcache
+export GOPATH={CURRENT_DIR}/hcache
+go get github.com/tobert/pcstat
+go build
+cp hcache /usr/local/bin
 ```
 
 ## Requirements
