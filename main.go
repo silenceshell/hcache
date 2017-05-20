@@ -45,6 +45,7 @@ var (
 func init() {
 	// TODO: error on useless/broken combinations
 	flag.IntVar(&pidFlag, "pid", 0, "show all open maps for the given pid")
+	flag.IntVar(&topFlag, "top", 0, "show top biggest cached files")
 	flag.BoolVar(&terseFlag, "terse", false, "show terse output")
 	flag.BoolVar(&nohdrFlag, "nohdr", false, "omit the header from terse & text output")
 	flag.BoolVar(&jsonFlag, "json", false, "return data in JSON format")
@@ -53,7 +54,6 @@ func init() {
 	flag.BoolVar(&ppsFlag, "pps", false, "include the per-page status in JSON output")
 	flag.BoolVar(&histoFlag, "histo", false, "print a simple histogram instead of raw data")
 	flag.BoolVar(&bnameFlag, "bname", false, "convert paths to basename to narrow the output")
-	flag.IntVar(&topFlag, "top", 0, "convert paths to basename to narrow the output")
 }
 
 func uniqueSlice(slice *[]string) {
@@ -70,7 +70,7 @@ func uniqueSlice(slice *[]string) {
     *slice = (*slice)[:total]
 }
 
-func getStatsFromFiles(files []string) PcStatusList{
+func getStatsFromFiles(files []string) PcStatusList {
 
 	stats := make(PcStatusList, 0, len(files))
 	for _, fname := range files {
@@ -90,6 +90,22 @@ func getStatsFromFiles(files []string) PcStatusList{
 		stats = append(stats, status)
 	}
 	return stats
+}
+
+func formatStats(stats PcStatusList) {
+	if jsonFlag {
+		stats.formatJson(!ppsFlag)
+	} else if terseFlag {
+		stats.formatTerse()
+	} else if histoFlag {
+		stats.formatHistogram()
+	} else if unicodeFlag {
+		stats.formatUnicode()
+	} else if plainFlag {
+		stats.formatPlain()
+	} else {
+		stats.formatText()
+	}
 }
 
 func top(top int) {
@@ -124,8 +140,7 @@ func top(top int) {
 
 	sort.Sort(PcStatusList(stats))
 	topStats := stats[:top]
-
-	topStats.formatText()
+	formatStats(topStats)
 }
 
 func main() {
@@ -152,20 +167,7 @@ func main() {
 	}
 
 	stats := getStatsFromFiles(files)
-
-	if jsonFlag {
-		stats.formatJson(!ppsFlag)
-	} else if terseFlag {
-		stats.formatTerse()
-	} else if histoFlag {
-		stats.formatHistogram()
-	} else if unicodeFlag {
-		stats.formatUnicode()
-	} else if plainFlag {
-		stats.formatPlain()
-	} else {
-		stats.formatText()
-	}
+	formatStats(stats)
 }
 
 func getPidMaps(pid int) []string {
