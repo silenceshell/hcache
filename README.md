@@ -39,10 +39,10 @@ $ sudo hcache --top 10
 |----------------------------------------------------------------------------------+----------------+------------+-----------+---------|
 | /opt/google/chrome/chrome                                                        | 114911208      | 28055      | 25457     | 090.740 |
 | /usr/share/code/code                                                             | 67688720       | 16526      | 12274     | 074.271 |
-| /home/bottle/Software/pycharm-community-2016.2/lib/pycharm.jar                   | 95177431       | 23237      | 11325     | 048.737 |
+| /home/silenceshell/Software/pycharm-community-2016.2/lib/pycharm.jar                   | 95177431       | 23237      | 11325     | 048.737 |
 | /opt/atom/atom                                                                   | 62641344       | 15294      | 10578     | 069.164 |
 | /usr/bin/dockerd                                                                 | 39121168       | 9552       | 7103      | 074.361 |
-| /home/bottle/Software/pycharm-community-2016.2/jre/jre/lib/amd64/libjfxwebkit.so | 57455824       | 14028      | 6625      | 047.227 |
+| /home/silenceshell/Software/pycharm-community-2016.2/jre/jre/lib/amd64/libjfxwebkit.so | 57455824       | 14028      | 6625      | 047.227 |
 | /usr/lib/x86_64-linux-gnu/libQtWebKit.so.4.10.2                                  | 36462184       | 8902       | 6316      | 070.950 |
 | /usr/lib/beyondcompare/BCompare                                                  | 30640160       | 7481       | 5505      | 073.586 |
 | /usr/bin/SecureCRT                                                               | 29524560       | 7209       | 4806      | 066.667 |
@@ -60,7 +60,7 @@ $ sudo ./hcache --top 3  --bname
 $ 
 $ lsof /usr/lib/x86_64-linux-gnu/libQtWebKit.so.4.10.2 
 COMMAND    PID   USER  FD   TYPE DEVICE SIZE/OFF    NODE NAME
-quiterss 20630 bottle mem    REG    8,5 36462184 3936610 /usr/lib/x86_64-linux-gnu/libQtWebKit.so.4.10.2
+quiterss 20630 silenceshell mem    REG    8,5 36462184 3936610 /usr/lib/x86_64-linux-gnu/libQtWebKit.so.4.10.2
 ```
 
 ## Building
