@@ -8,7 +8,7 @@ So I add a feature to pcstat: you can use the option `--top [X]` to show the top
 
 ## Download
 
-I also build a bin file. You can download it from [here](http://7xir15.com1.z0.glb.clouddn.com/hcache), have a try! I have tested it on centos7.2 and ubuntu 16.04.
+I also build a bin file. You can download it from [here](https://silenceshell-1255345740.cos.ap-shanghai.myqcloud.com/hcache), have a try! I have tested it on centos7.2 and ubuntu 16.04.
 
 ## Usage
 
