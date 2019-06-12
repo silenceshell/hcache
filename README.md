@@ -65,13 +65,13 @@ quiterss 20630 silenceshell mem    REG    8,5 36462184 3936610 /usr/lib/x86_64-l
 
 ## Building
 
+hcache needs go version > 1.12 for go mod
+
 ```
 git clone https://github.com/silenceshell/hcache.git
-cd {CURRENT_DIR}/hcache
-export GOPATH={CURRENT_DIR}/hcache
-go get github.com/tobert/pcstat
-go build
-cp hcache /usr/local/bin
+cd hcache
+make build
+sudo cp hcache /usr/local/bin/ 
 ```
 
 ## Requirements

@@ -5,7 +5,7 @@
 // you might only see the Unix docs. This project makes heavy use of
 // platform-specific implementations. We recommend reading the source if you
 // are interested.
-package main
+package utils
 
 // Process is the generic interface that is implemented on every platform
 // and provides common operations for processes.
@@ -23,16 +23,16 @@ type Process interface {
 	Executable() string
 }
 
-type ProcessSlice [] Process
+type ProcessSlice []Process
 
 func (a ProcessSlice) Len() int {
-    return len(a)
+	return len(a)
 }
-func (a ProcessSlice) Swap(i, j int){
-    a[i], a[j] = a[j], a[i]
+func (a ProcessSlice) Swap(i, j int) {
+	a[i], a[j] = a[j], a[i]
 }
 func (a ProcessSlice) Less(i, j int) bool {
-    return a[j].RSS() < a[i].RSS()
+	return a[j].RSS() < a[i].RSS()
 }
 
 // Processes returns all processes.
@@ -50,5 +50,5 @@ func Processes() ([]Process, error) {
 // Process will be nil and error will be nil if a matching process is
 // not found.
 func FindProcess(pid int) (Process, error) {
-	return findProcess(pid)
+	return FindProcess(pid)
 }
