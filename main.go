@@ -26,11 +26,12 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"hcache/pkg/utils"
 	"log"
 	"os"
 	"path"
-	"strings"
 	"sort"
+	"strings"
 
 	"github.com/tobert/pcstat"
 )
@@ -40,7 +41,6 @@ var (
 	terseFlag, nohdrFlag, jsonFlag, unicodeFlag bool
 	plainFlag, ppsFlag, histoFlag, bnameFlag    bool
 )
-
 
 func init() {
 	// TODO: error on useless/broken combinations
@@ -57,17 +57,17 @@ func init() {
 }
 
 func uniqueSlice(slice *[]string) {
-    found := make(map[string]bool)
-    total := 0
-    for i, val := range *slice {
-        if _, ok := found[val]; !ok {
-            found[val] = true
-            (*slice)[total] = (*slice)[i]
-            total++
-        }
-    }
+	found := make(map[string]bool)
+	total := 0
+	for i, val := range *slice {
+		if _, ok := found[val]; !ok {
+			found[val] = true
+			(*slice)[total] = (*slice)[i]
+			total++
+		}
+	}
 
-    *slice = (*slice)[:total]
+	*slice = (*slice)[:total]
 }
 
 func getStatsFromFiles(files []string) PcStatusList {
@@ -94,22 +94,22 @@ func getStatsFromFiles(files []string) PcStatusList {
 
 func formatStats(stats PcStatusList) {
 	if jsonFlag {
-		stats.formatJson(!ppsFlag)
+		stats.FormatJson(!ppsFlag)
 	} else if terseFlag {
-		stats.formatTerse()
+		stats.FormatTerse()
 	} else if histoFlag {
-		stats.formatHistogram()
+		stats.FormatHistogram()
 	} else if unicodeFlag {
-		stats.formatUnicode()
+		stats.FormatUnicode()
 	} else if plainFlag {
-		stats.formatPlain()
+		stats.FormatPlain()
 	} else {
-		stats.formatText()
+		stats.FormatText()
 	}
 }
 
 func top(top int) {
-	p, err := Processes()
+	p, err := utils.Processes()
 	if err != nil {
 		log.Fatalf("err: %s", err)
 	}
@@ -118,7 +118,7 @@ func top(top int) {
 		log.Fatal("Cannot find any process.")
 	}
 
-	results := make([]Process, 0, 50)
+	results := make([]utils.Process, 0, 50)
 
 	for _, p1 := range p {
 		if p1.RSS() != 0 {

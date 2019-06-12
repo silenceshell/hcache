@@ -34,18 +34,17 @@ import (
 
 type PcStatusList []pcstat.PcStatus
 
-
 func (a PcStatusList) Len() int {
-    return len(a)
+	return len(a)
 }
-func (a PcStatusList) Swap(i, j int){
-    a[i], a[j] = a[j], a[i]
+func (a PcStatusList) Swap(i, j int) {
+	a[i], a[j] = a[j], a[i]
 }
 func (a PcStatusList) Less(i, j int) bool {
-    return a[j].Cached < a[i].Cached
+	return a[j].Cached < a[i].Cached
 }
 
-func (stats PcStatusList) formatUnicode() {
+func (stats PcStatusList) FormatUnicode() {
 	maxName := stats.maxNameLen()
 
 	// create horizontal grid line
@@ -75,7 +74,7 @@ func (stats PcStatusList) formatUnicode() {
 	fmt.Println(bot)
 }
 
-func (stats PcStatusList) formatText() {
+func (stats PcStatusList) FormatText() {
 	maxName := stats.maxNameLen()
 
 	// create horizontal grid line
@@ -105,7 +104,7 @@ func (stats PcStatusList) formatText() {
 	fmt.Println(bot)
 }
 
-func (stats PcStatusList) formatPlain() {
+func (stats PcStatusList) FormatPlain() {
 	maxName := stats.maxNameLen()
 
 	// -nohdr may be chosen to save 2 lines of precious vertical space
@@ -124,7 +123,7 @@ func (stats PcStatusList) formatPlain() {
 	}
 }
 
-func (stats PcStatusList) formatTerse() {
+func (stats PcStatusList) FormatTerse() {
 	if !nohdrFlag {
 		fmt.Println("name,size,timestamp,mtime,pages,cached,percent")
 	}
@@ -136,7 +135,7 @@ func (stats PcStatusList) formatTerse() {
 	}
 }
 
-func (stats PcStatusList) formatJson(clearpps bool) {
+func (stats PcStatusList) FormatJson(clearpps bool) {
 	// clear the per-page status when requested
 	// emits an empty "status": [] field in the JSON when disabled, but NBD.
 	if clearpps {
@@ -157,7 +156,7 @@ func (stats PcStatusList) formatJson(clearpps bool) {
 // http://www.unicode.org/charts/PDF/U2580.pdf
 // https://github.com/puppetlabs/mcollective-puppet-agent/blob/master/application/puppet.rb#L143
 // https://github.com/holman/spark
-func (stats PcStatusList) formatHistogram() {
+func (stats PcStatusList) FormatHistogram() {
 	ws := getwinsize()
 	maxName := stats.maxNameLen()
 

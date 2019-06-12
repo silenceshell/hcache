@@ -1,12 +1,12 @@
 // +build linux
 
-package main
+package utils
 
 import (
 	"fmt"
 	"io/ioutil"
-	"strings"
 	"strconv"
+	"strings"
 )
 
 // Refresh reloads all the data associated with this process.

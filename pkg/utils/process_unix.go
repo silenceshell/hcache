@@ -1,6 +1,6 @@
 // +build linux solaris
 
-package main
+package utils
 
 import (
 	"fmt"
@@ -29,7 +29,6 @@ func (p *UnixProcess) Pid() int {
 func (p *UnixProcess) PPid() int {
 	return p.ppid
 }
-
 
 func (p *UnixProcess) RSS() int {
 	return p.rss
