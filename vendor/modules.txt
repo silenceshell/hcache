@@ -1,6 +1,0 @@
-# github.com/tobert/pcstat v0.0.0-20170528024208-91a7346e5b46
-## explicit
-github.com/tobert/pcstat
-# golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a
-## explicit
-golang.org/x/sys/unix
