@@ -2,3 +2,5 @@ github.com/tobert/pcstat v0.0.0-20170528024208-91a7346e5b46 h1:EdkYqRD6XseIEkG6w
 github.com/tobert/pcstat v0.0.0-20170528024208-91a7346e5b46/go.mod h1:SsVnrN1vmJraM9qhce7VK8Rbu+kHocT//gvBiqKjAfs=
 golang.org/x/sys v0.0.0-20190730174312-6a60838ec25 h1:DSGJ2VUjs77lSrQSUvriUax9/iEsLuR35ba80Vqy9oQ=
 golang.org/x/sys v0.0.0-20190730174312-6a60838ec25/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a h1:aYOabOQFp6Vj6W1F80affTUvO9UxmJRx8K0gsfABByQ=
+golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
