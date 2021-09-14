@@ -53,6 +53,8 @@ func (stats PcStatusList) FormatUnicode() {
 	hr := fmt.Sprintf("├%s┼────────────────┼────────────┼───────────┼─────────┤", pad)
 	bot := fmt.Sprintf("└%s┴────────────────┴────────────┴───────────┴─────────┘", pad)
 
+	var size_sum, page_sum, cached_sum int64
+
 	fmt.Println(top)
 
 	// -nohdr may be chosen to save 2 lines of precious vertical space
@@ -69,8 +71,16 @@ func (stats PcStatusList) FormatUnicode() {
 		// I tried a few different formats only this one kept the decimals aligned
 		fmt.Printf("│ %s%s │ %-15d│ %-11d│ %-10d│ %07.3f │\n",
 			pcs.Name, pad, pcs.Size, pcs.Pages, pcs.Cached, pcs.Percent)
+
+		size_sum += pcs.Size
+		page_sum += int64(pcs.Pages)
+		cached_sum += int64(pcs.Cached)
 	}
 
+	fmt.Println(hr)
+	pad = strings.Repeat(" ", maxName-len("Count"))
+	fmt.Printf("│ %s%s │ %-15d│ %-11d│ %-10d│ %07.3f │\n",
+		"Count", pad, size_sum, page_sum, cached_sum, (float64(cached_sum)/float64(page_sum))*100.00)
 	fmt.Println(bot)
 }
 
@@ -82,6 +92,7 @@ func (stats PcStatusList) FormatText() {
 	top := fmt.Sprintf("+%s+----------------+------------+-----------+---------+", pad)
 	hr := fmt.Sprintf("|%s+----------------+------------+-----------+---------|", pad)
 	bot := fmt.Sprintf("+%s+----------------+------------+-----------+---------+", pad)
+	var size_sum, page_sum, cached_sum int64
 
 	fmt.Println(top)
 
@@ -99,13 +110,22 @@ func (stats PcStatusList) FormatText() {
 		// I tried a few different formats only this one kept the decimals aligned
 		fmt.Printf("| %s%s | %-15d| %-11d| %-10d| %07.3f |\n",
 			pcs.Name, pad, pcs.Size, pcs.Pages, pcs.Cached, pcs.Percent)
-	}
 
+		size_sum += pcs.Size
+		page_sum += int64(pcs.Pages)
+		cached_sum += int64(pcs.Cached)
+	}
+	fmt.Println(hr)
+	pad = strings.Repeat(" ", maxName-len("Count"))
+	fmt.Printf("│ %s%s │ %-15d│ %-11d│ %-10d│ %07.3f │\n",
+		"Count", pad, size_sum, page_sum, cached_sum, (float64(cached_sum)/float64(page_sum))*100.00)
 	fmt.Println(bot)
 }
 
 func (stats PcStatusList) FormatPlain() {
 	maxName := stats.maxNameLen()
+
+	var size_sum, page_sum, cached_sum int64
 
 	// -nohdr may be chosen to save 2 lines of precious vertical space
 	if !nohdrFlag {
@@ -120,10 +140,19 @@ func (stats PcStatusList) FormatPlain() {
 		// I tried a few different formats only this one kept the decimals aligned
 		fmt.Printf("%s%s  %-15d %-11d %-10d %07.3f\n",
 			pcs.Name, pad, pcs.Size, pcs.Pages, pcs.Cached, pcs.Percent)
+
+		size_sum += pcs.Size
+		page_sum += int64(pcs.Pages)
+		cached_sum += int64(pcs.Cached)
 	}
+
+	pad := strings.Repeat(" ", maxName-len("Count"))
+	fmt.Printf("%s%s  %-15d %-11d %-10d %07.3f\n",
+		"Count", pad, size_sum, page_sum, cached_sum, (float64(cached_sum)/float64(page_sum))*100.00)
 }
 
 func (stats PcStatusList) FormatTerse() {
+
 	if !nohdrFlag {
 		fmt.Println("name,size,timestamp,mtime,pages,cached,percent")
 	}
