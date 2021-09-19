@@ -49,9 +49,9 @@ func (stats PcStatusList) FormatUnicode() {
 
 	// create horizontal grid line
 	pad := strings.Repeat("─", maxName+2)
-	top := fmt.Sprintf("┌%s┬────────────────┬────────────┬───────────┬─────────┐", pad)
-	hr := fmt.Sprintf("├%s┼────────────────┼────────────┼───────────┼─────────┤", pad)
-	bot := fmt.Sprintf("└%s┴────────────────┴────────────┴───────────┴─────────┘", pad)
+	top := fmt.Sprintf("┌%s┬────────────────┬────────────┬─────────────┬─────────────┬─────────┐", pad)
+	hr := fmt.Sprintf("├%s┼────────────────┼────────────┼─────────────┼─────────────┼─────────┤", pad)
+	bot := fmt.Sprintf("└%s┴────────────────┴────────────┴─────────────┴─────────────┴─────────┘", pad)
 
 	var size_sum, page_sum, cached_sum int64
 
@@ -60,7 +60,7 @@ func (stats PcStatusList) FormatUnicode() {
 	// -nohdr may be chosen to save 2 lines of precious vertical space
 	if !nohdrFlag {
 		pad = strings.Repeat(" ", maxName-4)
-		fmt.Printf("│ Name%s │ Size (bytes)   │ Pages      │ Cached    │ Percent │\n", pad)
+		fmt.Printf("│ Name%s │ Size (bytes)   │ File Pages │ Cached Page │ Cached Size │ Percent │\n", pad)
 		fmt.Println(hr)
 	}
 
@@ -69,8 +69,8 @@ func (stats PcStatusList) FormatUnicode() {
 
 		// %07.3f was chosen to make it easy to scan the percentages vertically
 		// I tried a few different formats only this one kept the decimals aligned
-		fmt.Printf("│ %s%s │ %-15d│ %-11d│ %-10d│ %07.3f │\n",
-			pcs.Name, pad, pcs.Size, pcs.Pages, pcs.Cached, pcs.Percent)
+		fmt.Printf("│ %s%s │ %-15d│ %-11d│ %-12d│ %-12d│ %07.3f │\n",
+			pcs.Name, pad, pcs.Size, pcs.Pages, pcs.Cached, pcs.Cached*4096, pcs.Percent)
 
 		size_sum += pcs.Size
 		page_sum += int64(pcs.Pages)
@@ -79,8 +79,9 @@ func (stats PcStatusList) FormatUnicode() {
 
 	fmt.Println(hr)
 	pad = strings.Repeat(" ", maxName-len("Sum"))
-	fmt.Printf("│ %s%s │ %-15d│ %-11d│ %-10d│ %07.3f │\n",
-		"Sum", pad, size_sum, page_sum, cached_sum, (float64(cached_sum)/float64(page_sum))*100.00)
+	fmt.Printf("│ %s%s │ %-15d│ %-11d│ %-12d│ %-12s│ %07.3f │\n",
+		"Sum", pad, size_sum, page_sum, cached_sum, Size_to_string(int64(cached_sum*4096)),
+		(float64(cached_sum)/float64(page_sum))*100.00)
 	fmt.Println(bot)
 }
 
@@ -89,9 +90,9 @@ func (stats PcStatusList) FormatText() {
 
 	// create horizontal grid line
 	pad := strings.Repeat("-", maxName+2)
-	top := fmt.Sprintf("+%s+----------------+------------+-----------+---------+", pad)
-	hr := fmt.Sprintf("|%s+----------------+------------+-----------+---------|", pad)
-	bot := fmt.Sprintf("+%s+----------------+------------+-----------+---------+", pad)
+	top := fmt.Sprintf("+%s+----------------+------------+-------------+-------------+---------+", pad)
+	hr := fmt.Sprintf("|%s+----------------+------------+-------------+-------------+---------|", pad)
+	bot := fmt.Sprintf("+%s+----------------+------------+-------------+-------------+---------+", pad)
 	var size_sum, page_sum, cached_sum int64
 
 	fmt.Println(top)
@@ -99,7 +100,7 @@ func (stats PcStatusList) FormatText() {
 	// -nohdr may be chosen to save 2 lines of precious vertical space
 	if !nohdrFlag {
 		pad = strings.Repeat(" ", maxName-4)
-		fmt.Printf("| Name%s | Size (bytes)   | Pages      | Cached    | Percent |\n", pad)
+		fmt.Printf("| Name%s | Size (bytes)   | File Pages | Cached Page | Cached Size | Percent |\n", pad)
 		fmt.Println(hr)
 	}
 
@@ -108,8 +109,8 @@ func (stats PcStatusList) FormatText() {
 
 		// %07.3f was chosen to make it easy to scan the percentages vertically
 		// I tried a few different formats only this one kept the decimals aligned
-		fmt.Printf("| %s%s | %-15d| %-11d| %-10d| %07.3f |\n",
-			pcs.Name, pad, pcs.Size, pcs.Pages, pcs.Cached, pcs.Percent)
+		fmt.Printf("| %s%s | %-15d| %-11d| %-12d| %-12d| %07.3f |\n",
+			pcs.Name, pad, pcs.Size, pcs.Pages, pcs.Cached, pcs.Cached*4096, pcs.Percent)
 
 		size_sum += pcs.Size
 		page_sum += int64(pcs.Pages)
@@ -117,8 +118,9 @@ func (stats PcStatusList) FormatText() {
 	}
 	fmt.Println(hr)
 	pad = strings.Repeat(" ", maxName-len("Sum"))
-	fmt.Printf("│ %s%s │ %-15d│ %-11d│ %-10d│ %07.3f │\n",
-		"Sum", pad, size_sum, page_sum, cached_sum, (float64(cached_sum)/float64(page_sum))*100.00)
+	fmt.Printf("│ %s%s │ %-15d│ %-11d│ %-12d│ %-12s│ %07.3f │\n",
+		"Sum", pad, size_sum, page_sum, cached_sum, Size_to_string(int64(cached_sum*4096)),
+		(float64(cached_sum)/float64(page_sum))*100.00)
 	fmt.Println(bot)
 }
 
@@ -130,7 +132,7 @@ func (stats PcStatusList) FormatPlain() {
 	// -nohdr may be chosen to save 2 lines of precious vertical space
 	if !nohdrFlag {
 		pad := strings.Repeat(" ", maxName-4)
-		fmt.Printf("Name%s  Size (bytes)    Pages       Cached     Percent\n", pad)
+		fmt.Printf("Name%s  Size (bytes)    File Pages  Cached Page  Cached Size  Percent \n", pad)
 	}
 
 	for _, pcs := range stats {
@@ -138,8 +140,8 @@ func (stats PcStatusList) FormatPlain() {
 
 		// %07.3f was chosen to make it easy to scan the percentages vertically
 		// I tried a few different formats only this one kept the decimals aligned
-		fmt.Printf("%s%s  %-15d %-11d %-10d %07.3f\n",
-			pcs.Name, pad, pcs.Size, pcs.Pages, pcs.Cached, pcs.Percent)
+		fmt.Printf("%s%s  %-15d %-11d %-12d %-12d %07.3f\n",
+			pcs.Name, pad, pcs.Size, pcs.Pages, pcs.Cached, pcs.Cached*4096, pcs.Percent)
 
 		size_sum += pcs.Size
 		page_sum += int64(pcs.Pages)
@@ -147,20 +149,21 @@ func (stats PcStatusList) FormatPlain() {
 	}
 
 	pad := strings.Repeat(" ", maxName-len("Sum"))
-	fmt.Printf("%s%s  %-15d %-11d %-10d %07.3f\n",
-		"Sum", pad, size_sum, page_sum, cached_sum, (float64(cached_sum)/float64(page_sum))*100.00)
+	fmt.Printf("%s%s  %-15d %-11d %-12d %-12s %07.3f\n",
+		"Sum", pad, size_sum, page_sum, cached_sum, Size_to_string(int64(cached_sum*4096)),
+		(float64(cached_sum)/float64(page_sum))*100.00)
 }
 
 func (stats PcStatusList) FormatTerse() {
 
 	if !nohdrFlag {
-		fmt.Println("name,size,timestamp,mtime,pages,cached,percent")
+		fmt.Println("name,size,timestamp,mtime,filepages,cachedpage,cachesize,percent")
 	}
 	for _, pcs := range stats {
 		time := pcs.Timestamp.Unix()
 		mtime := pcs.Mtime.Unix()
-		fmt.Printf("%s,%d,%d,%d,%d,%d,%g\n",
-			pcs.Name, pcs.Size, time, mtime, pcs.Pages, pcs.Cached, pcs.Percent)
+		fmt.Printf("%s,%d,%d,%d,%d,%d,%d,%g\n",
+			pcs.Name, pcs.Size, time, mtime, pcs.Pages, pcs.Cached, pcs.Cached*4096, pcs.Percent)
 	}
 }
 
@@ -266,4 +269,28 @@ func (stats PcStatusList) maxNameLen() int {
 		maxName = 5
 	}
 	return maxName
+}
+
+func Size_to_string(cachesize int64) string {
+	var KB, MB, GB, TB, PB int64
+	KB = 1024
+	MB = 1024 * KB
+	GB = 1024 * MB
+	TB = 1024 * GB
+	PB = 1024 * TB
+
+	if cachesize > PB {
+		return fmt.Sprintf("%.2f PB", (float64(cachesize) / float64(PB)))
+	}
+	if cachesize > TB {
+		return fmt.Sprintf("%.2f TB", (float64(cachesize) / float64(TB)))
+	}
+	if cachesize > GB {
+		return fmt.Sprintf("%.2f GB", (float64(cachesize) / float64(GB)))
+	}
+	if cachesize > MB {
+		return fmt.Sprintf("%.2f MB", (float64(cachesize) / float64(MB)))
+	}
+
+	return fmt.Sprintf("%.2f KB", (float64(cachesize) / float64(KB)))
 }
