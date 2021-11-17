@@ -1,4 +1,5 @@
-github.com/tobert/pcstat v0.0.0-20170528024208-91a7346e5b46 h1:EdkYqRD6XseIEkG6wDSoxaA+cZaKuayTMXUJJ9v06+E=
-github.com/tobert/pcstat v0.0.0-20170528024208-91a7346e5b46/go.mod h1:SsVnrN1vmJraM9qhce7VK8Rbu+kHocT//gvBiqKjAfs=
-golang.org/x/sys v0.0.0-20210809222454-d867a43fc93e h1:WUoyKPm6nCo1BnNUvPGnFG3T5DUVem42yDJZZ4CNxMA=
-golang.org/x/sys v0.0.0-20210809222454-d867a43fc93e/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+github.com/tobert/pcstat v0.0.1 h1:NxXAb8Jxb98oagaTvdvnB0t4dsThQmGxMRZ+OJf2WTY=
+github.com/tobert/pcstat v0.0.1/go.mod h1:VKepz+gb+o6C1PlINP9Qoz5PDEPM2VLRJsilEHwfD+4=
+golang.org/x/sys v0.0.0-20210917161153-d61c044b1678/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+golang.org/x/sys v0.0.0-20211116061358-0a5406a5449c h1:DHcbWVXeY+0Y8HHKR+rbLwnoh2F4tNCY7rTiHJ30RmA=
+golang.org/x/sys v0.0.0-20211116061358-0a5406a5449c/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
