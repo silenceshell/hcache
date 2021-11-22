@@ -33,7 +33,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/tobert/pcstat/pkg"
+	pcstat "github.com/tobert/pcstat/pkg"
 )
 
 var (
@@ -167,6 +167,7 @@ func main() {
 	}
 
 	stats := getStatsFromFiles(files)
+	sort.Sort(PcStatusList(stats))
 	formatStats(stats)
 }
 
