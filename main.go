@@ -33,13 +33,14 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/tobert/pcstat/pkg"
+	pcstat "github.com/tobert/pcstat/pkg"
 )
 
 var (
 	pidFlag, topFlag                            int
 	terseFlag, nohdrFlag, jsonFlag, unicodeFlag bool
 	plainFlag, ppsFlag, histoFlag, bnameFlag    bool
+	sortFlag                                    bool
 )
 
 func init() {
@@ -54,6 +55,7 @@ func init() {
 	flag.BoolVar(&ppsFlag, "pps", false, "include the per-page status in JSON output")
 	flag.BoolVar(&histoFlag, "histo", false, "print a simple histogram instead of raw data")
 	flag.BoolVar(&bnameFlag, "bname", false, "convert paths to basename to narrow the output")
+	flag.BoolVar(&sortFlag, "sort", false, "sort output by cached pages desc order")
 }
 
 func uniqueSlice(slice *[]string) {
@@ -167,6 +169,9 @@ func main() {
 	}
 
 	stats := getStatsFromFiles(files)
+	if sortFlag {
+		sort.Sort(PcStatusList(stats))
+	}
 	formatStats(stats)
 }
 
