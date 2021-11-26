@@ -86,7 +86,7 @@ From the mincore(2) man page:
 
 ## Author
 
-silenceshell <hubottle@gmail.com> @datastart.cn
+silenceshell
 
 ## License
 
