@@ -1,2 +1,2 @@
 build:
-	GOPROXY=https://gocenter.io GOOS="linux" go build
+	GOOS="linux" go build
