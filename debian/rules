@@ -1,0 +1,8 @@
+#!/usr/bin/make -f
+
+export GOCACHE=/tmp
+export PATH := $(PATH):/usr/lib/go-1.14/bin/
+
+%:
+	dh $@
+
