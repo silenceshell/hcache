@@ -45,7 +45,7 @@ var (
 func init() {
 	// TODO: error on useless/broken combinations
 	flag.IntVar(&pidFlag, "pid", 0, "show all open maps for the given pid")
-	flag.IntVar(&topFlag, "top", 0, "show top x cached files")
+	flag.IntVar(&topFlag, "top", 0, "show top x cached files in descending order")
 	flag.BoolVar(&terseFlag, "terse", false, "show terse output")
 	flag.BoolVar(&nohdrFlag, "nohdr", false, "omit the header from terse & text output")
 	flag.BoolVar(&jsonFlag, "json", false, "return data in JSON format")
