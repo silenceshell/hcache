@@ -45,7 +45,7 @@ var (
 func init() {
 	// TODO: error on useless/broken combinations
 	flag.IntVar(&pidFlag, "pid", 0, "show all open maps for the given pid")
-	flag.IntVar(&topFlag, "top", 0, "show top x cached files in descending order")
+	flag.IntVar(&topFlag, "top", 0, "show top x cached files in specified range(pid/system) and descending order")
 	flag.BoolVar(&terseFlag, "terse", false, "show terse output")
 	flag.BoolVar(&nohdrFlag, "nohdr", false, "omit the header from terse & text output")
 	flag.BoolVar(&jsonFlag, "json", false, "return data in JSON format")
@@ -146,7 +146,8 @@ func top(top int) {
 func main() {
 	flag.Parse()
 
-	if topFlag != 0 {
+	if pidFlag == 0 && topFlag != 0 {
+		// List all processes on the system
 		top(topFlag)
 		os.Exit(0)
 	}
@@ -168,6 +169,9 @@ func main() {
 
 	stats := getStatsFromFiles(files)
 	sort.Sort(PcStatusList(stats))
+	if topFlag != 0 && topFlag < len(stats) {
+		stats = stats[:topFlag]
+	}
 	formatStats(stats)
 }
 
@@ -176,7 +180,13 @@ func getPidMaps(pid int) []string {
 
 	f, err := os.Open(fname)
 	if err != nil {
-		log.Fatalf("could not open '%s' for read: %v", fname, err)
+		if pidFlag == 0 {
+			// If we are not using the pid flag, some dead processes are acceptable.
+			fmt.Printf("could not open '%s' for read: %v", fname, err)
+			return []string{};
+		} else {
+			log.Fatalf("using -pid and could not open '%s' for read: %v", fname, err)
+		}
 	}
 	defer f.Close()
 
