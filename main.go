@@ -32,6 +32,9 @@ import (
 	"path"
 	"sort"
 	"strings"
+	"io/ioutil"
+	"path/filepath"
+	"strconv"
 
 	pcstat "github.com/tobert/pcstat/pkg"
 )
@@ -40,12 +43,14 @@ var (
 	pidFlag, topFlag                            int
 	terseFlag, nohdrFlag, jsonFlag, unicodeFlag bool
 	plainFlag, ppsFlag, histoFlag, bnameFlag    bool
+	memcg string
 )
 
 func init() {
 	// TODO: error on useless/broken combinations
 	flag.IntVar(&pidFlag, "pid", 0, "show all open maps for the given pid")
-	flag.IntVar(&topFlag, "top", 0, "show top x cached files in descending order")
+	flag.IntVar(&topFlag, "top", 0, "show top x cached files in specified range(pid/system) and descending order")
+	flag.StringVar(&memcg, "memcg", "", "List pagecached files for a memory cgroup")
 	flag.BoolVar(&terseFlag, "terse", false, "show terse output")
 	flag.BoolVar(&nohdrFlag, "nohdr", false, "omit the header from terse & text output")
 	flag.BoolVar(&jsonFlag, "json", false, "return data in JSON format")
@@ -143,10 +148,44 @@ func top(top int) {
 	formatStats(topStats)
 }
 
+func getTasksInMemcg(memcg string) ([]int, error) {
+	// Get the path of the tasks file for the memory cgroup
+	if !strings.HasPrefix(memcg, "/sys/fs/cgroup/memory") {
+		memcg = filepath.Join("/sys/fs/cgroup/memory", memcg)
+	}
+	tasksFile := filepath.Join(memcg, "tasks")
+
+	// Read the contents of the tasks file
+	bytes, err := ioutil.ReadFile(tasksFile)
+	if err != nil {
+		return nil, err
+	}
+
+	// Split the contents of the tasks file into lines
+	lines := strings.Split(strings.TrimSpace(string(bytes)), "\n")
+
+	// Convert each line to an integer PID and add it to the result array
+	var pids []int
+	for _, line := range lines {
+		if line == "" {
+			continue
+		}
+		pid, err := strconv.Atoi(line)
+		if err != nil {
+			return nil, err
+		}
+		pids = append(pids, pid)
+	}
+
+	return pids, nil
+}
+
+
 func main() {
 	flag.Parse()
 
-	if topFlag != 0 {
+	if pidFlag == 0 && memcg == "" && topFlag != 0 {
+		// List all processes on the system
 		top(topFlag)
 		os.Exit(0)
 	}
@@ -158,6 +197,24 @@ func main() {
 		files = append(files, maps...)
 	}
 
+	if memcg != "" {
+		// List pagecached files for the memory cgroup specified by memcg
+		pids, err := getTasksInMemcg(memcg)
+		if err != nil {
+			fmt.Printf("Error getting tasks in memory cgroup: %v\n", err)
+			os.Exit(1)
+		}
+		if len(pids) == 0 {
+			fmt.Printf("No pid found in mem cgroup %s\n", memcg)
+			os.Exit(1)
+		}
+		for _, pid := range pids {
+			pcstat.SwitchMountNs(pid)
+			maps := getPidMaps(pid)
+			files = append(files, maps...)
+		}
+	}
+
 	// all non-flag arguments are considered to be filenames
 	// this works well with shell globbing
 	// file order is preserved throughout this program
@@ -166,8 +223,12 @@ func main() {
 		os.Exit(1)
 	}
 
+	uniqueSlice(&files)
 	stats := getStatsFromFiles(files)
 	sort.Sort(PcStatusList(stats))
+	if topFlag != 0 && topFlag < len(stats) {
+		stats = stats[:topFlag]
+	}
 	formatStats(stats)
 }
 
@@ -176,7 +237,13 @@ func getPidMaps(pid int) []string {
 
 	f, err := os.Open(fname)
 	if err != nil {
-		log.Fatalf("could not open '%s' for read: %v", fname, err)
+		if pidFlag == 0 {
+			// If we are not using the pid flag, some dead processes are acceptable.
+			fmt.Printf("could not open '%s' for read: %v", fname, err)
+			return []string{};
+		} else {
+			log.Fatalf("using -pid and could not open '%s' for read: %v", fname, err)
+		}
 	}
 	defer f.Close()
 
