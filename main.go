@@ -172,7 +172,7 @@ func main() {
 }
 
 func getPidMaps(pid int) []string {
-	fname := fmt.Sprintf("/proc/%d/maps", pid)
+	fname := fmt.Sprintf("/proc/%d/fd", pid)
 
 	f, err := os.Open(fname)
 	if err != nil {
