@@ -131,7 +131,9 @@ func top(top int) {
 	for _, process := range results {
 		pcstat.SwitchMountNs(process.Pid())
 		maps := getPidMaps(process.Pid())
-		files = append(files, maps...)
+		if maps != nil {
+			files = append(files, maps...)
+		}
 	}
 
 	uniqueSlice(&files)
@@ -155,7 +157,9 @@ func main() {
 	if pidFlag != 0 {
 		pcstat.SwitchMountNs(pidFlag)
 		maps := getPidMaps(pidFlag)
-		files = append(files, maps...)
+		if maps != nil {
+			files = append(files, maps...)
+		}
 	}
 
 	// all non-flag arguments are considered to be filenames
@@ -176,7 +180,8 @@ func getPidMaps(pid int) []string {
 
 	f, err := os.Open(fname)
 	if err != nil {
-		log.Fatalf("could not open '%s' for read: %v", fname, err)
+		log.Printf("could not open '%s' for read: %v", fname, err)
+		return nil
 	}
 	defer f.Close()
 
